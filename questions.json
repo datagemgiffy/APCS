@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "language": "Java",
+    "type": "mc",
+    "prompt": "What is the output of the following Java code segment?",
+    "code": "int sum = 0;\nfor (int i = 1; i <= 5; i++) {\n    sum += i;\n}\nSystem.out.println(sum);",
+    "options": ["5", "10", "15", "20"],
+    "answer": "15",
+    "explanation": "The loop sums 1+2+3+4+5 = 15."
+  },
+  {
+    "id": 2,
+    "language": "Python",
+    "type": "input",
+    "prompt": "What value does d hold after execution?",
+    "code": "a = 10\nb = 3\nc = a // b\nd = a % b",
+    "answer": "1",
+    "explanation": "10 // 3 = 3, 10 % 3 = 1."
+  },
+  {
+    "id": 3,
+    "language": "C++",
+    "type": "mc",
+    "prompt": "What is the function signature for the default constructor of a class named Car in C++?",
+    "code": "/* Class Car */",
+    "options": ["public void Car()", "Car()", "Car(int value)", "void Car()"],
+    "answer": "Car()",
+    "explanation": "Constructors in C++ have no return type and share the class name."
+  }
+]
