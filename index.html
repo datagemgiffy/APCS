@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AP CS Practice</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-ap-gray text-ap-dark min-h-screen flex flex-col">
+  <header class="p-6 bg-ap-blue text-white text-center text-2xl font-bold shadow-md">
+    AP Computer Science Practice
+  </header>
+
+  <main class="flex-grow container mx-auto p-6 max-w-3xl">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Randomized Question</h2>
+      <select id="language-select" class="p-2 border rounded bg-white">
+        <option>Java</option>
+        <option>Python</option>
+        <option>C++</option>
+        <option>C#</option>
+        <option>Assembly</option>
+      </select>
+    </div>
+
+    <div id="question-section" class="bg-white rounded-xl p-6 shadow-md">
+      <div id="question-text" class="mb-4"></div>
+      <div id="answer-area" class="space-y-2"></div>
+      <div id="input-area" class="hidden mt-4">
+        <input id="user-input" type="text" class="border rounded p-2 w-full" placeholder="Type your answer here">
+      </div>
+      <div class="mt-4 flex space-x-2">
+        <button id="submit-button" class="bg-ap-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700">Submit</button>
+        <button id="next-button" class="hidden bg-ap-green text-white px-4 py-2 rounded-lg hover:bg-green-700">Next</button>
+      </div>
+    </div>
+
+    <div id="feedback-section" class="hidden mt-6 bg-white rounded-xl p-6 shadow-md">
+      <h3 id="result-header" class="text-lg font-bold mb-2"></h3>
+      <div id="explanation-content" class="text-gray-700"></div>
+    </div>
+  </main>
+
+  <footer class="p-4 bg-gray-200 text-center text-sm text-gray-600">
+    All AP® Computer Science questions are © College Board. This site is not endorsed by College Board.<br>
+    Additional practice questions may be AI-generated.
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
