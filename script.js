@@ -1,125 +1,148 @@
-let currentQuestion = null;
-let submitted = false;
-let lastQuestionId = -1;
-let currentLanguage = 'Java';
+// script.js
 
-const API_KEY = "AIzaSyBQmFX5Vlxwh_MPzIm1c3OmPcbnCay1za4"; // Embedded Gemini API key
+let questions = [];
+let currentQuestionIndex = -1;
+let usedQuestions = [];
 
-async function fetchAIQuestion(language) {
+// Gemini API key (embedded for testing — not recommended in production)
+const GEMINI_API_KEY = "AIzaSyBQmFX5Vlxwh_MPzIm1c3OmPcbnCay1za4";
+
+// Load questions.json
+async function loadQuestions() {
   try {
-    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: `Generate an AP Computer Science A style question in ${language}. Provide JSON with keys: id, language, type, prompt, code (if any), options (if mc), answer, explanation.` }] }]
-      })
-    });
+    const response = await fetch("questions.json");
+    const data = await response.json();
+    questions = data;
+    showNextQuestion();
+  } catch (err) {
+    console.error("Error loading questions:", err);
+  }
+}
+
+// Pick a random question, cycling through all before repeating
+async function getRandomQuestion() {
+  // If we've used all, reset
+  if (usedQuestions.length === questions.length) {
+    usedQuestions = [];
+  }
+
+  let question;
+  let idx;
+
+  // Keep picking until we find one not used
+  do {
+    idx = Math.floor(Math.random() * questions.length);
+    question = questions[idx];
+  } while (usedQuestions.includes(idx));
+
+  usedQuestions.push(idx);
+
+  // Occasionally generate an AI question
+  if (Math.random() < 0.2) {
+    const aiQ = await generateAIQuestion();
+    if (aiQ) {
+      return aiQ;
+    }
+  }
+
+  return question;
+}
+
+// Call Gemini API to generate an AP CS-style question
+async function generateAIQuestion() {
+  try {
+    const res = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: "Generate a multiple-choice AP Computer Science style question with 4 answer options (A, B, C, D). Provide JSON with fields: question, options (array), correctAnswer, explanation."
+            }]
+          }]
+        })
+      }
+    );
+
     const data = await res.json();
-    const text = data.candidates[0].content.parts[0].text;
-    return JSON.parse(text);
-  } catch (e) {
-    console.error("AI question fetch failed", e);
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return null;
+
+    const parsed = JSON.parse(text);
+    return parsed;
+  } catch (err) {
+    console.error("AI generation failed:", err);
     return null;
   }
 }
 
-async function loadQuestions() {
-  const res = await fetch("questions.json");
-  const localQuestions = await res.json();
+// Render a question to UI
+async function showNextQuestion() {
+  const q = await getRandomQuestion();
+  currentQuestionIndex++;
 
-  // 20% chance to add an AI question
-  if (Math.random() < 0.2) {
-    const aiQ = await fetchAIQuestion(currentLanguage);
-    if (aiQ) localQuestions.push(aiQ);
-  }
-  return localQuestions;
-}
+  const qText = document.getElementById("question-text");
+  const answerArea = document.getElementById("answer-area");
+  const inputArea = document.getElementById("input-area");
+  const submitBtn = document.getElementById("submit-button");
+  const nextBtn = document.getElementById("next-button");
 
-async function selectQuestion() {
-  const allQuestions = await loadQuestions();
-  const filtered = allQuestions.filter(q => q.language === currentLanguage);
+  qText.textContent = q.question;
+  answerArea.innerHTML = "";
+  inputArea.classList.add("hidden");
 
-  if (filtered.length === 0) {
-    return { id: 0, type: 'input', prompt: `No questions for ${currentLanguage}`, code: null, answer: "", explanation: "", language: currentLanguage };
-  }
-
-  let q;
-  do {
-    q = filtered[Math.floor(Math.random() * filtered.length)];
-  } while (q.id === lastQuestionId && filtered.length > 1);
-
-  lastQuestionId = q.id;
-  return q;
-}
-
-async function displayQuestion() {
-  currentQuestion = await selectQuestion();
-  submitted = false;
-
-  const questionTextEl = document.getElementById('question-text');
-  const answerAreaEl = document.getElementById('answer-area');
-  const inputAreaEl = document.getElementById('input-area');
-  const userInputEl = document.getElementById('user-input');
-  const submitBtn = document.getElementById('submit-button');
-  const nextBtn = document.getElementById('next-button');
-  const feedbackSectionEl = document.getElementById('feedback-section');
-  const resultHeaderEl = document.getElementById('result-header');
-  const explanationContentEl = document.getElementById('explanation-content');
-
-  answerAreaEl.innerHTML = '';
-  inputAreaEl.classList.add('hidden');
-  feedbackSectionEl.classList.add('hidden');
-  submitBtn.classList.remove('hidden');
-  nextBtn.classList.add('hidden');
-
-  questionTextEl.innerHTML = `<span class='text-sm text-gray-500'>(${currentQuestion.language} Question)</span><br>${currentQuestion.prompt}`;
-  if (currentQuestion.code) {
-    const pre = document.createElement('pre');
-    pre.className = 'code-block';
-    pre.textContent = currentQuestion.code;
-    questionTextEl.appendChild(pre);
-  }
-
-  if (currentQuestion.type === 'mc') {
-    currentQuestion.options.forEach((opt, idx) => {
-      const div = document.createElement('div');
-      div.className = 'mc-option bg-ap-gray p-3 rounded-lg border border-gray-300';
-      div.innerHTML = `<span class='font-medium text-ap-blue mr-2'>${String.fromCharCode(65+idx)}.</span> ${opt}`;
-      div.dataset.value = opt;
-      div.onclick = () => {
-        if (submitted) return;
-        [...answerAreaEl.children].forEach(d => d.classList.remove('selected'));
-        div.classList.add('selected');
-        userInputEl.dataset.selected = opt;
-      };
-      answerAreaEl.appendChild(div);
+  if (q.options) {
+    // Multiple choice
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.className =
+        "mc-option w-full text-left p-3 border rounded-lg hover:bg-ap-blue hover:text-white";
+      btn.onclick = () => checkAnswer(opt, q.correctAnswer, q.explanation);
+      answerArea.appendChild(btn);
     });
   } else {
-    inputAreaEl.classList.remove('hidden');
-    userInputEl.value = '';
+    // Free response
+    inputArea.classList.remove("hidden");
+    submitBtn.onclick = () => {
+      const userAns = document.getElementById("user-input").value;
+      checkAnswer(userAns, q.correctAnswer, q.explanation);
+    };
   }
 
-  submitBtn.onclick = () => {
-    if (submitted) return;
-    let userAnswer = '';
-    if (currentQuestion.type === 'mc') userAnswer = userInputEl.dataset.selected || '';
-    else userAnswer = userInputEl.value;
-
-    submitted = true;
-    submitBtn.classList.add('hidden');
-    nextBtn.classList.remove('hidden');
-
-    const isCorrect = userAnswer.trim().toLowerCase() === currentQuestion.answer.trim().toLowerCase();
-    feedbackSectionEl.classList.remove('hidden');
-    resultHeaderEl.textContent = isCorrect ? "Correct! ✅" : "Incorrect ❌";
-    explanationContentEl.innerHTML = `<p><strong>Your Answer:</strong> ${userAnswer}</p><p><strong>Correct:</strong> ${currentQuestion.answer}</p><p>${currentQuestion.explanation}</p>`;
-  };
-
-  nextBtn.onclick = () => displayQuestion();
+  // Reset buttons
+  submitBtn.classList.remove("hidden");
+  nextBtn.classList.add("hidden");
+  document.getElementById("feedback-section").classList.add("hidden");
 }
 
-window.onload = () => {
-  const langSelect = document.getElementById('language-select');
-  langSelect.onchange = e => { currentLanguage = e.target.value; displayQuestion(); };
-  displayQuestion();
-};
+// Check answer and show feedback
+function checkAnswer(userAnswer, correctAnswer, explanation) {
+  const feedback = document.getElementById("feedback-section");
+  const resultHeader = document.getElementById("result-header");
+  const explanationContent = document.getElementById("explanation-content");
+  const nextBtn = document.getElementById("next-button");
+  const submitBtn = document.getElementById("submit-button");
+
+  if (userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase()) {
+    resultHeader.textContent = "✅ Correct!";
+    resultHeader.className = "text-green-600 text-2xl font-bold mb-3";
+  } else {
+    resultHeader.textContent = `❌ Incorrect. Correct answer: ${correctAnswer}`;
+    resultHeader.className = "text-red-600 text-2xl font-bold mb-3";
+  }
+
+  explanationContent.textContent = explanation;
+  feedback.classList.remove("hidden");
+
+  submitBtn.classList.add("hidden");
+  nextBtn.classList.remove("hidden");
+}
+
+// Button wiring
+document.getElementById("next-button").addEventListener("click", showNextQuestion);
+
+// Init
+loadQuestions();
