@@ -1,52 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AP CS Practice</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AP CS Practice Generator</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-ap-gray text-ap-dark min-h-screen flex flex-col">
-  <header class="p-6 bg-ap-blue text-white text-center text-2xl font-bold shadow-md">
-    AP Computer Science Practice
+<body class="bg-ap-gray min-h-screen font-sans flex flex-col items-center p-4">
+
+  <!-- Header -->
+  <header class="w-full max-w-4xl bg-white shadow-lg rounded-xl p-4 mb-6">
+    <h1 class="text-3xl font-extrabold text-ap-dark text-center">
+      CS Fundamentals Practice Generator
+    </h1>
+    <p class="text-center text-gray-600 mt-1">
+      Practice concepts in Java, Python, C++, C#, and Assembly.
+    </p>
+    <p class="text-center text-xs text-gray-500 mt-2">
+      All released AP CS questions are sourced from College Board. 
+      Additional practice questions may be AI-generated.
+    </p>
   </header>
 
-  <main class="flex-grow container mx-auto p-6 max-w-3xl">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-semibold">Randomized Question</h2>
-      <select id="language-select" class="p-2 border rounded bg-white">
-        <option>Java</option>
-        <option>Python</option>
-        <option>C++</option>
-        <option>C#</option>
-        <option>Assembly</option>
+  <!-- Main Question Container -->
+  <main class="w-full max-w-4xl">
+    <!-- Language Selector -->
+    <div class="mb-4 p-4 bg-white rounded-xl shadow-lg flex items-center justify-between">
+      <label for="language-select" class="font-bold text-ap-dark">Select Language Focus:</label>
+      <select id="language-select"
+              class="p-2 border border-gray-300 rounded-lg focus:ring-ap-blue focus:border-ap-blue">
+        <option value="Java">Java (AP CS-A)</option>
+        <option value="Python">Python</option>
+        <option value="C++">C++</option>
+        <option value="C#">C#</option>
+        <option value="Assembly">Assembly</option>
       </select>
     </div>
 
-    <div id="question-section" class="bg-white rounded-xl p-6 shadow-md">
-      <div id="question-text" class="mb-4"></div>
-      <div id="answer-area" class="space-y-2"></div>
+    <!-- Question Card -->
+    <div id="question-card" class="bg-white p-6 rounded-xl shadow-2xl transition-all duration-300">
+      <div id="question-text" class="text-xl font-semibold text-ap-dark mb-4">Loading question...</div>
+      <div id="answer-area" class="space-y-3"></div>
       <div id="input-area" class="hidden mt-4">
-        <input id="user-input" type="text" class="border rounded p-2 w-full" placeholder="Type your answer here">
+        <input type="text" id="user-input"
+               class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-ap-blue focus:ring-ap-blue transition"
+               placeholder="Enter your answer" />
       </div>
-      <div class="mt-4 flex space-x-2">
-        <button id="submit-button" class="bg-ap-blue text-white px-4 py-2 rounded-lg hover:bg-blue-700">Submit</button>
-        <button id="next-button" class="hidden bg-ap-green text-white px-4 py-2 rounded-lg hover:bg-green-700">Next</button>
-      </div>
-    </div>
-
-    <div id="feedback-section" class="hidden mt-6 bg-white rounded-xl p-6 shadow-md">
-      <h3 id="result-header" class="text-lg font-bold mb-2"></h3>
-      <div id="explanation-content" class="text-gray-700"></div>
-    </div>
-  </main>
-
-  <footer class="p-4 bg-gray-200 text-center text-sm text-gray-600">
-    All AP® Computer Science questions are © College Board. This site is not endorsed by College Board.<br>
-    Additional practice questions may be AI-generated.
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+      <div class="mt-6 flex justify-between items-center space-x-4">
+        <button id="submit-button"
+                class="bg-ap-blue text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-opacity-90 transition">
+          Submit Answer
+        </button>
+        <button id="next-button"
+                class="bg-ap-green text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-opacity-90 transition hidden">
