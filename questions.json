@@ -1,31 +1,51 @@
 [
   {
-    "id": 1,
-    "language": "Java",
-    "type": "mc",
-    "prompt": "What is the output of the following Java code segment?",
-    "code": "int sum = 0;\nfor (int i = 1; i <= 5; i++) {\n    sum += i;\n}\nSystem.out.println(sum);",
-    "options": ["5", "10", "15", "20"],
-    "answer": "15",
-    "explanation": "The loop sums 1+2+3+4+5 = 15."
+    "question": "Consider the following code segment:\n\nint x = 5;\nint y = 10;\nif (x < y) {\n    System.out.println(\"x is less than y\");\n}\n\nWhat is printed as a result of executing the code segment?",
+    "options": [
+      "x is less than y",
+      "y is less than x",
+      "Nothing is printed",
+      "An error occurs"
+    ],
+    "correctAnswer": "x is less than y",
+    "explanation": "Since x = 5 and y = 10, the condition x < y is true, so 'x is less than y' is printed."
   },
   {
-    "id": 2,
-    "language": "Python",
-    "type": "input",
-    "prompt": "What value does d hold after execution?",
-    "code": "a = 10\nb = 3\nc = a // b\nd = a % b",
-    "answer": "1",
-    "explanation": "10 // 3 = 3, 10 % 3 = 1."
+    "question": "Which of the following best describes the purpose of a constructor in Java?",
+    "options": [
+      "To define a new data type",
+      "To initialize a newly created object",
+      "To terminate the program",
+      "To override methods from a superclass"
+    ],
+    "correctAnswer": "To initialize a newly created object",
+    "explanation": "A constructor is a special method used to initialize objects when they are created."
   },
   {
-    "id": 3,
-    "language": "C++",
-    "type": "mc",
-    "prompt": "What is the function signature for the default constructor of a class named Car in C++?",
-    "code": "/* Class Car */",
-    "options": ["public void Car()", "Car()", "Car(int value)", "void Car()"],
-    "answer": "Car()",
-    "explanation": "Constructors in C++ have no return type and share the class name."
+    "question": "In Python, what is the output of the following code?\n\nnums = [1, 2, 3]\nprint(nums[1])",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "Error"
+    ],
+    "correctAnswer": "2",
+    "explanation": "Python uses zero-based indexing. nums[1] refers to the second element, which is 2."
+  },
+  {
+    "question": "Suppose you declare an array in C++ as: int arr[5] = {1, 2, 3, 4, 5};\nWhat is the value of arr[2]?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "5"
+    ],
+    "correctAnswer": "3",
+    "explanation": "Arrays in C++ are zero-indexed, so arr[2] refers to the third element, which is 3."
+  },
+  {
+    "question": "Placeholder free-response style: Write a method in Java called 'sumArray' that takes an array of integers and returns the sum of its elements.",
+    "correctAnswer": "A correct implementation of sumArray should loop through the array and return the total sum.",
+    "explanation": "For example: public int sumArray(int[] arr) { int sum = 0; for (int num : arr) { sum += num; } return sum; }"
   }
 ]
