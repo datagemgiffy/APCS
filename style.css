@@ -1,46 +1,38 @@
-/* Custom theme */
+/* Tailwind handles most styling — these are custom extras */
+
+/* Custom palette for AP theme */
 :root {
-  --ap-blue: #2563eb;
-  --ap-green: #16a34a;
-  --ap-gray: #f3f4f6;
-  --ap-dark: #111827;
+  --ap-blue: #007bff;
+  --ap-green: #28a745;
+  --ap-red: #dc3545;
+  --ap-gray: #f8f9fa;
+  --ap-dark: #343a40;
 }
 
-.bg-ap-blue { background-color: var(--ap-blue); }
-.bg-ap-green { background-color: var(--ap-green); }
-.bg-ap-gray { background-color: var(--ap-gray); }
-.text-ap-dark { color: var(--ap-dark); }
-.text-ap-blue { color: var(--ap-blue); }
+body {
+  background-color: var(--ap-gray);
+  font-family: 'Inter', sans-serif;
+}
 
+/* Code block style */
 .code-block {
-  background: #1e293b;
-  color: #f8fafc;
-  padding: 0.75rem;
+  background-color: #282c34;
+  color: #f7f7f7;
+  padding: 1rem;
+  margin: 1rem 0;
   border-radius: 0.5rem;
   overflow-x: auto;
-  margin-top: 0.5rem;
+  font-family: 'Consolas', 'Monaco', monospace;
+  white-space: pre-wrap;
 }
 
+/* Multiple choice hover effect */
 .mc-option {
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  transition: all 0.2s;
 }
 
 .mc-option:hover {
-  background-color: #e5e7eb;
-  transform: scale(1.01);
-}
-
-.mc-option.selected {
-  background-color: #dbeafe;
-  border-color: var(--ap-blue);
-  font-weight: bold;
-}
-
-button {
-  transition: transform 0.1s;
-}
-
-button:active {
-  transform: scale(0.97);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
